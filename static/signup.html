@@ -1,0 +1,36 @@
+<form >
+  <div class="form-group">
+    <label for="exampleInputEmail1">Username</label>
+    <input ng-model='username' name='username' type="text" class="form-control" aria-describedby="emailHelp" placeholder="Enter a username">
+    <small id="emailHelp" class="form-text text-muted"></small>
+  </div>
+  <div class="form-group">
+    <label for="exampleInputEmail1">Email address</label>
+    <input ng-model='email' name='email' type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email">
+    <small id="emailHelp" class="form-text text-muted"></small>
+  </div>
+  <div class="form-group">
+    <label for="exampleInputEmail1">First Name</label>
+    <input ng-model='firstname' name='first_name' type="text" class="form-control" aria-describedby="emailHelp" placeholder="Enter first name">
+    <small class="form-text text-muted"></small>
+  </div>
+  <div class="form-group">
+    <label for="exampleInputEmail1">Last Name</label>
+    <input type="text" ng-model="lastname" name="last_name" class="form-control"  aria-describedby="emailHelp" placeholder="Enter last name">
+    <!-- <small id="emailHelp" class="form-text text-muted"></small> -->
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" class="form-control" placeholder="Password" name="password" ng-model="pass1" required>
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Confirm Password</label>
+    <input type="password" class="form-control" placeholder="Password" ng-model="pass2" required>
+  </div>
+  <div ng-show="doesntMatch">
+    <p>
+      WRONG!!!
+    </p>
+  </div>
+  <button ng-click='submit()'type="submit" method='post' name="button">Submit</button>
+</form>

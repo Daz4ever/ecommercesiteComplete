@@ -1,0 +1,10 @@
+<div class="row">
+  <div ng-repeat='product in searchresults' class="col-lg-4">
+    <div ui-sref="productDetails({productId: product.id})" class="">
+      <h2>{{product.name}}</h2>
+      <h3>{{product.price}}</h3>
+      <img class='picSize' ng-src="pics/{{product.image_path}}" alt="" />
+    </div>
+  </div>
+
+</div>
