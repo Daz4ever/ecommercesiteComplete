@@ -104,17 +104,18 @@ app.factory('yachtFactory', function factoryFunction($http, $rootScope, $cookies
       }
     })
   }
-  service.Purchase = function(auth, address) {
+  service.Checkout = function(auth_token, address) {
     return $http ({
       method: 'POST',
       url: '/api/shopping_cart/checkout',
       data: {
         auth_token: auth_token,
         address: address
-    })
-  }
+    }
+  });
+};
   return service;
-})
+});
 
 app.controller('frontpageController', function($scope, yachtFactory) {
   console.log('in front');
@@ -137,7 +138,7 @@ app.controller('productDetailsController', function($scope, $stateParams, yachtF
     yachtFactory.addToCart($rootScope.userToken, $scope.productId)
     console.log($rootScope.userToken)
     console.log($scope.productId)
-    $state.go('shoppingCart')
+    $state.go('productDetails')
     }
 });
 app.controller('shoppingCartController', function($scope, $stateParams, yachtFactory, $rootScope, $state) {
@@ -158,31 +159,53 @@ app.controller('shoppingCartController', function($scope, $stateParams, yachtFac
   });
 });
 app.controller('checkOutController', function($scope, $stateParams, yachtFactory, $rootScope, $state) {
-  // $scope.checkout = function() {
-  //
-  // }
-})
+
+  $scope.checkedOut = function(){
+    var Address = {
+      'street_address': $scope.street_address,
+      'city': $scope.city,
+      'state': $scope.state,
+      'zipcode': $scope.zipcode
+    }
+    console.log(Address);
+  yachtFactory.Checkout($rootScope.userToken, Address)
+  .success(function() {
+    console.log("address info entered");
+
+  }).error(function(data) {
+      console.log(Address)
+  })
+
+};
+});
 
 app.controller('signupController', function($scope, $state, yachtFactory) {
   $scope.submit = function() {
-  if($scope.pass1 === $scope.pass2) {
+
     console.log("correct!");
     var userInfo = {
       'username': $scope.username,
       'email': $scope.email,
       'first_name': $scope.firstname,
       'last_name': $scope.lastname,
-      'password': $scope.pass1
+      'password': $scope.pass1,
+      'password2': $scope.pass2
 
     }
     yachtFactory.signUp(userInfo)
     .success(function() {
       $state.go('login')
-    })
+    }).error(function(data) {
+      console.log("failed")
+        $scope.doesntMatch = true;
+    });
 
-  } else{
-    $scope.doesntMatch = true;
-    }
+
+    // .error() {
+    //
+    // }
+    // $scope.doesntMatch = true;
+
   }
 });
 
