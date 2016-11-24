@@ -15,5 +15,30 @@
     <label>Zip Code</label>
     <input ng-model="zipcode" name="zipcode" type="text" class="form-control" placeholder="Enter zip code">
   </div>
-  <button ng-click="checkedOut()" type="button" name="button">Confirm Checkout</button>
+
 </form>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Product</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="item in shoppingCartData">
+      <th scope="row">{{$index + 1}}</th>
+      <td>{{item.prodname}}</td>
+      <td>{{item.prodprice}}</td>
+    </tr>
+    <tr>
+      <td>
+        Total: ${{sum}}
+      </td>
+    </tr>
+
+  </tbody>
+
+</table>
+<button class="" ng-click="checkedOut()" type="button" name="button">Confirm Checkout</button>
