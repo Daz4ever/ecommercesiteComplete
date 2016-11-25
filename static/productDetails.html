@@ -1,7 +1,20 @@
+<div class="backgrdetails">
 
-{{prodInfo.name}}
-{{prodInfo.description}}
-{{prodInfo.price}}
-<img class="picSize" ng-src="pics/{{prodInfo.image_path}}" alt="" />
+<div class="sign3">
+<h2>{{prodInfo.name}}</h2>
+<br>
+<br>
 
-<button ng-click='detailAddCart()' type="button" name="button">Add to Cart</button>
+<br>
+<div class="col-sm-6">
+<img class="picSizex" ng-src="pics/{{prodInfo.image_path}}" alt="" />
+</div>
+<br>
+<div class="col-sm-6 width">
+  <p>{{prodInfo.description}}<p>
+    <h4>{{prodInfo.price | currency}}</h4>
+    <button style="color: black" ng-click='detailAddCart()' type="button" name="button">Add to Cart</button>
+</div>
+
+</div>
+</div>

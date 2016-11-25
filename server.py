@@ -2,9 +2,17 @@ from flask import Flask, jsonify, request, render_template, session, flash, redi
 import pg
 import bcrypt
 import uuid
+import time, stripe, os
 
 app = Flask('ECommerce', static_url_path='')
 db = pg.DB(dbname='E_commerce')
+
+# stripe_keys = {
+#   'secret_key': os.environ['SECRET_KEY'],
+#   'publishable_key': os.environ['PUBLISHABLE_KEY']
+# }
+#
+# stripe.api_key = stripe_keys['secret_key']
 
 # For testing purposes
 @app.route('/')
@@ -74,7 +82,16 @@ def login():
 
 
 ###### The following routes are available to authenticated users (users with a valid auth token only)
+@app.route('/api/shopping_cart/delete', methods=['POST'])
+def delete():
+    auth_token = request.get_json().get('auth_token')
 
+    check_token = db.query('select * from auth_token where token = $1', auth_token).namedresult()
+    if len(check_token) > 0:
+        delete_item = request.get_json().get('product_id')
+
+        db.query('delete from product_in_shopping_cart where product_id = $1', delete_item)
+        return "success", 200
 # Adds a product to an authenticated user's shopping cart
 @app.route('/api/shopping_cart', methods=['POST'])
 def shopping_cart():
@@ -83,6 +100,7 @@ def shopping_cart():
 
     check_token = db.query('select * from auth_token where token = $1', auth_token).namedresult()
     if len(check_token) > 0:
+
         #If authenticated user
         customer = db.query('select customer_id from auth_token where token = $1', auth_token).namedresult()[0]
         prod_id = request.get_json().get('product_id')
@@ -104,7 +122,7 @@ def get_shop():
         # If authenticated user
         customer = db.query('select customer_id from auth_token where token = $1', auth_token).namedresult()[0]
         # Queries all products in the user's shopping cart
-        current_cart = db.query('select product.name as prodName, product.price as prodPrice, product.description as prodDescription, product.image_path as prodImg from product_in_shopping_cart, product where product_in_shopping_cart.product_id = product.id and customer_id =$1', customer.customer_id).dictresult()
+        current_cart = db.query('select product.name as prodName, product.id as prodId, product.price as prodPrice, product.description as prodDescription, product.image_path as prodImg from product_in_shopping_cart, product where product_in_shopping_cart.product_id = product.id and customer_id =$1', customer.customer_id).dictresult()
         # Returns results in JSON format
         return jsonify(current_cart)
     else:
@@ -124,6 +142,9 @@ def checkout():
     check_token = db.query('select * from auth_token where token = $1', auth_token).namedresult()
     if len(check_token) > 0:
         # If authenticated user
+
+        stripe_token =  request.get_json().get('stripe_token')
+
         customer = db.query('select customer_id from auth_token where token = $1', auth_token).namedresult()[0]
         # Queries all products in the user's shopping cart
         current_cart = db.query('select product.id as prod_id from product_in_shopping_cart, product where product_in_shopping_cart.product_id = product.id and customer_id =$1', customer.customer_id).dictresult()
@@ -137,10 +158,12 @@ def checkout():
         state=state,
         zipcode=zipcode)
 
+
         # Queries the purchase id of the record inserted in the previous step
         purchase_id = db.query('select id from purchase order by id desc limit 1').namedresult()[0].id
         # For each product being purchased (each product that is in the current_cart):
         for product in current_cart:
+
             # Add that product to the table of items purchased by each user and include the purchase id number
             db.insert('product_in_purchase', purchase_id=purchase_id, product_id=product['prod_id']
             )

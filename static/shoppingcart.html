@@ -1,24 +1,39 @@
+<div class="backgrCheckout">
+
+<div class="sign2">
+
 <table class="table table-striped">
   <thead>
     <tr>
       <th>#</th>
       <th>Product</th>
       <th>Price</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="item in shoppingCartData">
+    <tr class="black" ng-repeat="item in shoppingCartData">
       <th scope="row">{{$index + 1}}</th>
       <td>{{item.prodname}}</td>
-      <td>{{item.prodprice}}</td>
-    </tr>
-    <tr>
+      <td>{{item.prodprice | currency}} </td>
       <td>
-        Total: ${{sum}}
+        <button type="button" class="btn btn-danger" ng-click="delete(item.prodid)">Delete</button>
       </td>
     </tr>
 
+
   </tbody>
+  <tr>
 
 </table>
-<button ng-click="checkout()" type="button" name="button">Checkout</button>
+<td>
+  Total: ${{sum}}
+</td>
+</tr>
+<br>
+<br>
+<button style="color: black;" ng-click="checkout()" type="button" name="button">Checkout</button>
+<br>
+<h3 style="color: yellow" ng-show="emptyCart">Your Cart is Empty<h3>
+</div>
+</div>
