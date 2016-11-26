@@ -193,13 +193,21 @@ app.controller('shoppingCartController', function($scope, $stateParams, yachtFac
 });
 app.controller('checkOutController', function($scope, $stateParams, yachtFactory, $rootScope, $state) {
 var Address = null;
+
   $scope.checkedOut = function(){
-     Address = {
-      'street_address': $scope.street_address,
-      'city': $scope.city,
-      'state': $scope.state,
-      'zipcode': $scope.zipcode
+
+    Address = {
+     'street_address': $scope.street_address,
+     'city': $scope.city,
+     'state': $scope.state,
+     'zipcode': $scope.zipcode
+   }
+
+    if(Address['street_address'] === undefined || Address['city']===undefined || Address['state']===undefined || Address['zipcode'] === undefined)  {
+      $scope.fillIn = true;
     }
+
+    else{
 
 
     yachtFactory.Checkout($rootScope.myToken, Address)
@@ -210,6 +218,7 @@ var Address = null;
       console.log("none")
     });
     $state.go('thankYou')
+}
 }
 yachtFactory.Cart()
 .success(function(data) {
