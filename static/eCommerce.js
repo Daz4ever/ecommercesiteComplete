@@ -64,6 +64,7 @@ app.factory('yachtFactory', function factoryFunction($http, $rootScope, $cookies
     $cookies.remove('userData');
     $rootScope.userName = '';
     $rootScope.userToken = null;
+    $rootScope.myToken = null
   };
 
   service.prods = function() {
@@ -156,11 +157,17 @@ app.controller('productDetailsController', function($scope, $stateParams, yachtF
     console.log($scope.prodInfo)
   })
   $scope.detailAddCart = function() {
+    if($scope.myToken) {
+    $scope.added = true;
     yachtFactory.addToCart($rootScope.myToken, $scope.productId)
     console.log($rootScope.myToken)
     console.log($scope.productId)
     $state.go('productDetails')
   }
+  else{
+    $scope.notAdded = true;
+  }
+}
 });
 app.controller('shoppingCartController', function($scope, $stateParams, yachtFactory, $rootScope, $state) {
   $scope.delete = function(product_id){
@@ -209,6 +216,22 @@ var Address = null;
 
     else{
 
+      var handler = StripeCheckout.configure({
+  // publishable key
+  key: 'pk_test_gueNUYd91f9K8pegsWsTk0gb',
+  locale: 'auto',
+  token: function callback(token) {
+    var stripeToken = token.id;
+    // Make checkout API call here and send the stripe token
+    // to the back end
+  }
+});
+      $scope.stripeHandler.open({
+     name: 'FOURTHDIMENSION',
+     description: 'Watches',
+     amount: $scope.sum
+   });
+
 
     yachtFactory.Checkout($rootScope.myToken, Address)
     .success(function() {
@@ -237,7 +260,7 @@ app.controller('thankYouController', function($scope){
 })
 
   app.controller('signupController', function($scope, $state, yachtFactory) {
-    $scope.submit = function() {
+    $scope.submit = function(token) {
 
       console.log("correct!");
       var userInfo = {
@@ -247,6 +270,7 @@ app.controller('thankYouController', function($scope){
         'last_name': $scope.lastname,
         'password': $scope.pass1,
         'password2': $scope.pass2
+        // 'stripe_token': token
 
       }
       yachtFactory.signUp(userInfo)

@@ -11,10 +11,14 @@
 </div>
 <br>
 <div class="col-sm-6 width">
-  <p>{{prodInfo.description}}<p>
+  <p style="margin-top: 30px">{{prodInfo.description}}<p>
     <h4>{{prodInfo.price | currency}}</h4>
     <button style="color: black" ng-click='detailAddCart()' type="button" name="button">Add to Cart</button>
+    <h3 style="color: yellow;" ng-show="added">Added to Cart</h3>
+    <h3 style="color: yellow;" ng-show="notAdded">Please Login First</h3>
 </div>
+
+
 
 </div>
 </div>

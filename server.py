@@ -7,12 +7,9 @@ import time, stripe, os
 app = Flask('ECommerce', static_url_path='')
 db = pg.DB(dbname='E_commerce')
 
-# stripe_keys = {
-#   'secret_key': os.environ['SECRET_KEY'],
-#   'publishable_key': os.environ['PUBLISHABLE_KEY']
-# }
-#
-# stripe.api_key = stripe_keys['secret_key']
+
+stripe.api_key = 'sk_test_nHUjv45sPEFU0wwS0hVhm5Kt'
+
 
 # For testing purposes
 @app.route('/')
@@ -143,7 +140,7 @@ def checkout():
     if len(check_token) > 0:
         # If authenticated user
 
-        stripe_token =  request.get_json().get('stripe_token')
+        # stripe_token =  request.get_json().get('stripe_token')
 
         customer = db.query('select customer_id from auth_token where token = $1', auth_token).namedresult()[0]
         # Queries all products in the user's shopping cart
@@ -170,6 +167,15 @@ def checkout():
         # Deletes all products from user's shopping cart in conclude the purchase
         result = db.query('delete from product_in_shopping_cart where customer_id= $1', customer.customer_id)
         # Returns the number of items deleted from shopping_cart (purchased)
+
+         amount = total_price * 100
+
+        stripe.Charge.create(
+            amount=amount,
+            currency='usd',
+            source=formData['stripe_token'],
+            description='Flask Charge'
+        )
         return result, 200
     else:
         # If not authenticated user

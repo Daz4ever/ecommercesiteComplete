@@ -2,9 +2,11 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Index</title>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <link rel="stylesheet" href="css.css">
+  <link href="https://fonts.googleapis.com/css?family=Unica+One" rel="stylesheet">
 
 
 
@@ -14,23 +16,27 @@
 
 
   <div class="bar">
-      <li ng-if="userName" class="marg bord">
+    <li class="none bord font">
+    FOURTHDIMENSION
+    </li>
+      <li ng-if="userName" class="none bord">
       Welcome {{userName}}!
       </li>
-      <li class="bord">
-        <a class="aclass" ui-sref="frontpage">Home</a>
-      </li>
-      <li ng-if="!userName" class="bord">
+
+      <li ng-if="!userName" class="right bord">
         <a class="aclass" ui-sref='signup'>Create Account</a>
       </li>
-      <li ng-if="userName" class="bord">
+      <li ng-if="userName" class="right bord">
         <a ng-click="logout()" class="aclass" ui-sref='mainpicpage'>Logout</a>
       </li>
-      <li ng-if="userName" class="bord">
+      <li ng-if="userName" class="right bord">
         <a class="aclass" ui-sref='shoppingCart'>Shopping Cart</a>
       </li>
-      <li ng-if="!userName" class="bord">
+      <li ng-if="!userName" class="right bord">
         <a class="aclass" ui-sref='login'>Login</a>
+      </li>
+      <li class="right bord">
+        <a class="aclass" ui-sref="frontpage">Home</a>
       </li>
   </div>
   <ui-view></ui-view>
