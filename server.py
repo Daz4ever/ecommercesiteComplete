@@ -168,7 +168,7 @@ def checkout():
         result = db.query('delete from product_in_shopping_cart where customer_id= $1', customer.customer_id)
         # Returns the number of items deleted from shopping_cart (purchased)
 
-         amount = total_price * 100
+        amount = total_price * 100
 
         stripe.Charge.create(
             amount=amount,
