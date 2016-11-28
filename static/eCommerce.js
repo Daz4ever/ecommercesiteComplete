@@ -226,11 +226,11 @@ var Address = null;
     // to the back end
   }
 });
-      $scope.stripeHandler.open({
-     name: 'FOURTHDIMENSION',
-     description: 'Watches',
-     amount: $scope.sum
-   });
+  //     $scope.stripeHandler.open({
+  //    name: 'FOURTHDIMENSION',
+  //    description: 'Watches',
+  //    amount: $scope.sum
+  //  });
 
 
     yachtFactory.Checkout($rootScope.myToken, Address)
