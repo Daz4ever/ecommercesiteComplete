@@ -59,12 +59,25 @@ app.config(function($stateProvider, $urlRouterProvider) {
 app.factory('yachtFactory', function factoryFunction($http, $rootScope, $cookies) {
   var service = {};
   var userInfo = {};
+  $rootScope.factoryCookieData = null;
+  $rootScope.factoryCookieData = $cookies.getObject('cookieData');
+  console.log("Printing initial cookie", $rootScope.factoryCookieData);
+
+  console.log("I am inside the factory!");
+  if ($rootScope.factoryCookieData) {
+    console.log("I am a cookie data in the factory!");
+    // grab auth_token from the cookieData
+    $rootScope.authToken = $rootScope.factoryCookieData.auth_token;
+    // grab user information from cookieData
+    $rootScope.user_info = $rootScope.factoryCookieData.user;
+  }
 
   $rootScope.logout = function(){
-    $cookies.remove('userData');
-    $rootScope.userName = '';
-    $rootScope.userToken = null;
-    $rootScope.myToken = null
+    $cookies.remove('cookieData');
+    $rootScope.factoryCookieData = null;
+    $rootScope.user_info = null;
+    $rootScope.authToken = null;
+
   };
 
   service.prods = function() {
@@ -104,13 +117,13 @@ app.factory('yachtFactory', function factoryFunction($http, $rootScope, $cookies
     });
 
   }
-  service.deleteFromCart = function(auth_token, product_id) {
+  service.deleteFromCart = function(auth_token, product) {
     return $http({
       method: 'POST',
       url: 'api/shopping_cart/delete',
       data: {
       auth_token: auth_token,
-      product_id: product_id
+      shopping_cart_id: product
     }
   });
 
@@ -121,7 +134,7 @@ app.factory('yachtFactory', function factoryFunction($http, $rootScope, $cookies
       method: 'GET',
       url: '/api/shopping_cart',
       params: {
-        auth_token: $rootScope.myToken
+        auth_token: $rootScope.authToken
       }
     })
   }
@@ -157,10 +170,10 @@ app.controller('productDetailsController', function($scope, $stateParams, yachtF
     console.log($scope.prodInfo)
   })
   $scope.detailAddCart = function() {
-    if($scope.myToken) {
+    if($scope.authToken) {
     $scope.added = true;
-    yachtFactory.addToCart($rootScope.myToken, $scope.productId)
-    console.log($rootScope.myToken)
+    yachtFactory.addToCart($rootScope.authToken, $scope.productId)
+    console.log($rootScope.authToken)
     console.log($scope.productId)
     $state.go('productDetails')
   }
@@ -170,9 +183,9 @@ app.controller('productDetailsController', function($scope, $stateParams, yachtF
 }
 });
 app.controller('shoppingCartController', function($scope, $stateParams, yachtFactory, $rootScope, $state) {
-  $scope.delete = function(product_id){
-    console.log(product_id);
-    yachtFactory.deleteFromCart($rootScope.myToken, product_id)
+  $scope.delete = function(product){
+    console.log(product);
+    yachtFactory.deleteFromCart($rootScope.authToken, product)
     .success(function(data) {
       $state.reload();
     })
@@ -180,8 +193,8 @@ app.controller('shoppingCartController', function($scope, $stateParams, yachtFac
   yachtFactory.Cart()
   .success(function(data) {
     $scope.shoppingCartData = data;
+    console.log("hello there guy")
     console.log($scope.shoppingCartData)
-
 
     var sum = 0;
     for(var i=0; i<data.length; i++) {
@@ -208,53 +221,81 @@ var Address = null;
      'city': $scope.city,
      'state': $scope.state,
      'zipcode': $scope.zipcode
-   }
+    }
 
     if(Address['street_address'] === undefined || Address['city']===undefined || Address['state']===undefined || Address['zipcode'] === undefined)  {
       $scope.fillIn = true;
-    }
-
-    else{
-
+      console.log("something here was undefined");
+    } else {
+      console.log("we entered the else clause");
       var handler = StripeCheckout.configure({
-  // publishable key
-  key: 'pk_test_gueNUYd91f9K8pegsWsTk0gb',
-  locale: 'auto',
-  token: function callback(token) {
-    var stripeToken = token.id;
-    // Make checkout API call here and send the stripe token
-    // to the back end
-  }
-});
-  //     $scope.stripeHandler.open({
-  //    name: 'FOURTHDIMENSION',
-  //    description: 'Watches',
-  //    amount: $scope.sum
-  //  });
+      // publishable key
+      key: 'pk_test_nFAPJ3VBn1iEmQQNMSNuS1bX',
+      locale: 'auto',
+      token: function callback(token) {
+        var stripeToken = token.id;
+        console.log("Token", token);
+        // Make checkout API call here and send the stripe token
+        // to the back end
+        yachtFactory.Checkout($rootScope.myToken, Address, token)
+          .success(function() {
+            console.log("address info entered");
 
+          }).error(function(data) {
+            console.log("none")
+          });
+          $state.go('thankYou')
+        }
+      })
+      handler.open({
+       name: 'FOURTHDIMENSION',
+       description: 'Watches',
+       amount: $scope.sum * 100
+      });
+    };
+    // $scope.stripeHandler.open({
+    //  name: 'FOURTHDIMENSION',
+    //  description: 'Watches',
+    //  amount: $scope.sum
+    // });
+ }
+  yachtFactory.Cart()
+    .success(function(data) {
+      console.log("DATA being returned", data);
+      $scope.shoppingCartData = data;
 
-    yachtFactory.Checkout($rootScope.myToken, Address)
-    .success(function() {
-      console.log("address info entered");
-
-    }).error(function(data) {
-      console.log("none")
+       var sum = 0;
+       for(var i=0; i<data.length; i++) {
+         sum += $scope.shoppingCartData[i].prodprice;
+       }
+        $scope.sum = sum;
+        console.log("Sum", $scope.sum);
     });
-    $state.go('thankYou')
-}
-}
-yachtFactory.Cart()
-.success(function(data) {
-  $scope.shoppingCartData = data;
 
-
-  var sum = 0;
-  for(var i=0; i<data.length; i++) {
-    sum += $scope.shoppingCartData[i].prodprice
-  }
-  $scope.sum = sum;
 });
-  });
+
+//     yachtFactory.Checkout($rootScope.myToken, Address)
+//     .success(function() {
+//       console.log("address info entered");
+//
+//     }).error(function(data) {
+//       console.log("none")
+//     });
+//     $state.go('thankYou')
+// }
+// }
+// yachtFactory.Cart()
+// .success(function(data) {
+//   $scope.shoppingCartData = data;
+//
+//
+//   var sum = 0;
+//   for(var i=0; i<data.length; i++) {
+//     sum += $scope.shoppingCartData[i].prodprice
+//   }
+//   $scope.sum = sum;
+// });
+//   });
 app.controller('thankYouController', function($scope){
 
 })
@@ -307,13 +348,11 @@ app.controller('thankYouController', function($scope){
       })
       .success(function(data) {
         console.log(data);
-        $cookies.putObject('userData', data.user)
-        $cookies.put('token', data.authtoken)
-        $cookies.put('username', data.user.username)
-        $rootScope.userName = $cookies.get('username');
-        console.log(loginInfo.password);
-        $rootScope.myToken = $cookies.get('token');
-        console.log($rootScope.myToken)
+        $cookies.putObject('cookieData', data)
+        console.log("wass up")
+        $rootScope.user_info = data.user
+        console.log(data.user);
+        $rootScope.authToken = data.auth_token;
         $state.go('frontpage');
       });
     }

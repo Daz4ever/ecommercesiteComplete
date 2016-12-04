@@ -194,6 +194,28 @@ h5.centertext
   font-family: 'Unica One', cursive, arial;
 }
 
+/* Page transition animation */
+
+/* on page load */
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* on state transition */
+
+.ng-enter {
+  opacity: 0;
+  transition: 400ms;
+}
+
+.ng-enter-active {
+  opacity: 1;
+  transition: 400ms;
+}
+
+
 @media screen and (max-width: 600px) {
 
 li.none.bord {

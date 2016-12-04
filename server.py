@@ -8,7 +8,7 @@ app = Flask('ECommerce', static_url_path='')
 db = pg.DB(dbname='E_commerce')
 
 
-stripe.api_key = 'sk_test_nHUjv45sPEFU0wwS0hVhm5Kt'
+# stripe.api_key = 'sk_test_nHUjv45sPEFU0wwS0hVhm5Kt'
 
 
 # For testing purposes
@@ -55,7 +55,10 @@ def login():
     # Get data from a login form on front-end (in JSON format)
     custEntry = request.get_json()
     # Queries the customer database for an entry that matches the customer's username
+    print custEntry["username"]
     customer = db.query('select * from customer where username = $1', custEntry["username"]).dictresult()[0]
+    print "hello"
+    print "hey there %s" % customer
     # Grabs the existing encrytped password for the matching user entry
     encrypted_password = customer['password']
     # Grabs the password entered by the user on the login form
@@ -70,7 +73,7 @@ def login():
         # Store created auth token in database
         db.insert('auth_token', token=token, customer_id=customer['id'])
         # Creates object of user information and the new auth token to return
-        loggedin = {"user": {'username': customer['username'], 'email': customer['email'], 'first_name': customer['first_name'], 'last_name': customer['last_name']}, 'authtoken': token}
+        loggedin = {"user": {'username': customer['username'], 'email': customer['email'], 'first_name': customer['first_name'], 'last_name': customer['last_name']}, 'auth_token': token}
         #Retuns user info and auth token in JSON format
         return jsonify(loggedin)
     else:
@@ -85,9 +88,9 @@ def delete():
 
     check_token = db.query('select * from auth_token where token = $1', auth_token).namedresult()
     if len(check_token) > 0:
-        delete_item = request.get_json().get('product_id')
+        delete_item = request.get_json().get('shopping_cart_id')
 
-        db.query('delete from product_in_shopping_cart where product_id = $1', delete_item)
+        db.query('delete from product_in_shopping_cart where product_in_shopping_cart.id = $1', delete_item)
         return "success", 200
 # Adds a product to an authenticated user's shopping cart
 @app.route('/api/shopping_cart', methods=['POST'])
@@ -119,7 +122,7 @@ def get_shop():
         # If authenticated user
         customer = db.query('select customer_id from auth_token where token = $1', auth_token).namedresult()[0]
         # Queries all products in the user's shopping cart
-        current_cart = db.query('select product.name as prodName, product.id as prodId, product.price as prodPrice, product.description as prodDescription, product.image_path as prodImg from product_in_shopping_cart, product where product_in_shopping_cart.product_id = product.id and customer_id =$1', customer.customer_id).dictresult()
+        current_cart = db.query('select product_in_shopping_cart.id, product.name as prodName, product.id as prodId, product.price as prodPrice, product.description as prodDescription, product.image_path as prodImg from product_in_shopping_cart, product where product_in_shopping_cart.product_id = product.id and customer_id =$1', customer.customer_id).dictresult()
         # Returns results in JSON format
         return jsonify(current_cart)
     else:
@@ -137,6 +140,7 @@ def checkout():
     state = address['state']
     zipcode = address['zipcode']
     check_token = db.query('select * from auth_token where token = $1', auth_token).namedresult()
+    stripe_token = request.get_json().get('stripe_token')
     if len(check_token) > 0:
         # If authenticated user
 
@@ -168,15 +172,19 @@ def checkout():
         result = db.query('delete from product_in_shopping_cart where customer_id= $1', customer.customer_id)
         # Returns the number of items deleted from shopping_cart (purchased)
 
-        amount = total_price * 100
+        amount = total.total * 100
+        print 'stike id', stripe_token['id']
+        print 'strike email %s' % stripe_token['email']
+
+        stripe.api_key = 'sk_test_nHUjv45sPEFU0wwS0hVhm5Kt'
 
         stripe.Charge.create(
             amount=amount,
             currency='usd',
-            source=formData['stripe_token'],
-            description='Flask Charge'
+            source=stripe_token['id'],
+            description='Flask Charge for'
         )
-        return result, 200
+        return jsonify(result), 200
     else:
         # If not authenticated user
         return 'Not authorized', 403
