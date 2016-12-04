@@ -1,3 +1,6 @@
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
+
 from flask import Flask, jsonify, request, render_template, session, flash, redirect
 import pg
 import bcrypt
