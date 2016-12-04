@@ -4,10 +4,20 @@ import bcrypt
 import uuid
 import time, stripe, os
 
-app = Flask('ECommerce', static_url_path='')
-db = pg.DB(dbname='E_commerce')
+# app = Flask('ECommerce', static_url_path='')
+# db = pg.DB(dbname='E_commerce')
 
+db = pg.DB(
+    dbname=os.environ.get('PG_DBNAME'),
+    host=os.environ.get('PG_HOST'),
+    user=os.environ.get('PG_USERNAME'),
+    passwd=os.environ.get('PG_PASSWORD'),
+)
 
+tmp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+static_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+app = Flask('ECommerce', static_url_path='', template_folder=tmp_dir,
+   static_folder=static_folder)
 # stripe.api_key = 'sk_test_nHUjv45sPEFU0wwS0hVhm5Kt'
 
 
