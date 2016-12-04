@@ -186,8 +186,8 @@ def checkout():
         # Returns the number of items deleted from shopping_cart (purchased)
 
         amount = total.total * 100
-        print 'stike id', stripe_token['id']
-        print 'strike email %s' % stripe_token['email']
+        print 'stripe id', stripe_token['id']
+        print 'stripe email %s' % stripe_token['email']
 
         stripe.api_key = 'sk_test_nHUjv45sPEFU0wwS0hVhm5Kt'
 
