@@ -1,4 +1,4 @@
-var app = angular.module('eCommerce', ['ui.router', 'ngCookies']);
+var app = angular.module('eCommerce', ['ui.router', 'ngCookies', 'ngAnimate']);
 
 app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
@@ -6,49 +6,49 @@ app.config(function($stateProvider, $urlRouterProvider) {
   .state({
     name: 'mainpicpage',
     url: '/',
-    templateUrl: 'mainPicPage.html',
+    templateUrl: 'templates/mainPicPage.html',
   })
 
   .state({
     name: 'frontpage',
     url: '/frontpage',
-    templateUrl: 'frontpage.html',
+    templateUrl: 'templates/frontpage.html',
     controller: 'frontpageController'
   })
   .state({
     name: 'productDetails',
     url: '/product/{productId}',
-    templateUrl: 'productDetails.html',
+    templateUrl: 'templates/productDetails.html',
     controller: 'productDetailsController'
   })
   .state({
     name: 'signup',
     url: '/signup',
-    templateUrl: 'signup.html',
+    templateUrl: 'templates/signup.html',
     controller: 'signupController'
   })
   .state({
     name: 'login',
     url: '/user/login',
-    templateUrl: 'login.html',
+    templateUrl: 'templates/login.html',
     controller: 'loginController'
   })
   .state({
     name: 'shoppingCart',
     url: '/user/shoppingcart',
-    templateUrl: 'shoppingcart.html',
+    templateUrl: 'templates/shoppingcart.html',
     controller: 'shoppingCartController'
   })
   .state({
     name: 'checkout',
     url: '/user/shoppingcart/checkout',
-    templateUrl: 'checkoutpage.html',
+    templateUrl: 'templates/checkoutpage.html',
     controller: 'checkOutController'
   })
   .state({
     name: 'thankYou',
     url: '/user/shoppingcart/checkout/complete',
-    templateUrl: 'thankYou.html',
+    templateUrl: 'templates/thankYou.html',
     controller: 'thankYouController'
   })
   $urlRouterProvider.otherwise('/');
