@@ -14,7 +14,7 @@ db = pg.DB(
     dbname=os.environ.get('PG_DBNAME'),
     host=os.environ.get('PG_HOST'),
     user=os.environ.get('PG_USERNAME'),
-    password=os.environ.get('PG_PASSWORD'),
+    passwd=os.environ.get('PG_PASSWORD'),
 )
 
 tmp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
