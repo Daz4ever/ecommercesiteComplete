@@ -31,35 +31,36 @@ Here the customer has the option of adding the watch to their cart. The shopping
   * Apache
 
 
-  The website uses RESTful API's (user makes HTTP requests to GET, POST, Delete data) to coordinate
-  between the front end (Angular) and the backend (Python/Flask) where the representations are in the form of JSON.  
 
 
 ##Screenshots
 
+The website uses RESTful API's (user makes HTTP requests to GET, POST, Delete data) to coordinate
+between the front end (Angular) and the backend (Python/Flask) where the representations are in the form of JSON.  
 
 
+####Frontend Angular
 ![Alt text](static/readmepics/frontend1.png)
 
 The frontpageController handles all the actions of of the initial products page.  The yachtFactory.prods function (named yachtFactory because I was initially going to sell yachts instead of watches but I never changed the name) makes an HTTP GET request to the server and returns data (all of the products) on .success.
 The productDetailsController grabs the specific product ID from the populated list of products when a watch is clicked on and returns the first in the array of data (which is the product title, description and price).
 
-
+####Frontend Angular
 ![Alt text](static/readmepics/Frontend0.png)  
 
 Here you can see all of the different HTTP requests made to the server that are called in the controllers.
 
-
+####Backend Flask/Python
 ![Alt text](static/readmepics/backend1.png)  
 
 The first python function products query all of the products which return data for the frontpageController and the second python function product querys all of the information for the specific product ID. Both return data in JSON format back the the front end.
 
-
+####Frontend Angular
 ![Alt text](static/readmepics/frontend2.png)  
 
 The shoppingCartController includes two factory functions. One to render all of the products in the shopping cart and one to delete items from the shopping cart. Inside the yachtFactory.Cart function a loop is used to go through all of the product prices and add them up for a sum total.  Using a checkout scope as a function, if the sum of the cart is greater than 0 the user will be able to go to the checkout page.
 
-
+####Backend Flask/Python
 ![Alt text](static/readmepics/backend2.png)  
 
 
