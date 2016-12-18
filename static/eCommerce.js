@@ -8,7 +8,6 @@ app.config(function($stateProvider, $urlRouterProvider) {
     url: '/',
     templateUrl: 'templates/mainPicPage.html',
   })
-
   .state({
     name: 'frontpage',
     url: '/frontpage',
@@ -36,24 +35,23 @@ app.config(function($stateProvider, $urlRouterProvider) {
   .state({
     name: 'shoppingCart',
     url: '/user/shoppingcart',
-    templateUrl: 'templates/shoppingcart.html',
+    templateUrl: 'shoppingcart.html',
     controller: 'shoppingCartController'
   })
   .state({
     name: 'checkout',
     url: '/user/shoppingcart/checkout',
-    templateUrl: 'templates/checkoutpage.html',
+    templateUrl: 'checkoutpage.html',
     controller: 'checkOutController'
   })
   .state({
     name: 'thankYou',
     url: '/user/shoppingcart/checkout/complete',
-    templateUrl: 'templates/thankYou.html',
+    templateUrl: 'thankYou.html',
     controller: 'thankYouController'
-  })
+  });
   $urlRouterProvider.otherwise('/');
-})
-//
+});
 
 //
 app.factory('yachtFactory', function factoryFunction($http, $rootScope, $cookies) {

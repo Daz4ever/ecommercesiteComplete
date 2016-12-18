@@ -7,15 +7,15 @@ import bcrypt
 import uuid
 import time, stripe, os
 
-# app = Flask('ECommerce', static_url_path='')
-# db = pg.DB(dbname='E_commerce')
+app = Flask('ECommerce', static_url_path='')
+db = pg.DB(dbname='E_commerce')
 
-db = pg.DB(
-    dbname=os.environ.get('PG_DBNAME_ECOMMERCE'),
-    host=os.environ.get('PG_HOST'),
-    user=os.environ.get('PG_USERNAME'),
-    passwd=os.environ.get('PG_PASSWORD'),
-)
+# db = pg.DB(
+#     dbname=os.environ.get('PG_DBNAME_ECOMMERCE'),
+#     host=os.environ.get('PG_HOST'),
+#     user=os.environ.get('PG_USERNAME'),
+#     passwd=os.environ.get('PG_PASSWORD'),
+# )
 
 tmp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 static_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
